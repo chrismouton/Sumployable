@@ -487,7 +487,6 @@ $RECYCLE.BIN/
 .azure
 
 # SQLite database files
-*.db
 *.db-shm
 *.db-wal
 
