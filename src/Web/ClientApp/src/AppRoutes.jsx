@@ -6,6 +6,7 @@ import { RegisterPage } from "./components/api-authorization/RegisterPage";
 import { ProtectedRoute } from "./components/api-authorization/ProtectedRoute";
 import { Dashboard } from "./components/Dashboard";
 import { JobApplications } from "./components/JobApplications";
+import { JobApplicationForm } from "./components/JobApplicationForm";
 
 const AppRoutes = [
   {
@@ -27,6 +28,14 @@ const AppRoutes = [
   {
     path: '/job-applications',
     element: <ProtectedRoute><JobApplications /></ProtectedRoute>
+  },
+  {
+    path: '/job-applications/new',
+    element: <ProtectedRoute><JobApplicationForm /></ProtectedRoute>
+  },
+  {
+    path: '/job-applications/:id/edit',
+    element: <ProtectedRoute><JobApplicationForm /></ProtectedRoute>
   },
   {
     path: '/login',

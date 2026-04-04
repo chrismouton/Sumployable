@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { JobApplicationsClient } from '../web-api-client';
-import { Briefcase, RefreshCw, Plus } from 'lucide-react';
+import { Briefcase, RefreshCw, Plus, Pencil } from 'lucide-react';
 
 function getLookupTitle(lookups, id) {
   if (!lookups) return '—';
@@ -37,6 +38,7 @@ function formatDate(date) {
 }
 
 export function JobApplications() {
+  const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -65,7 +67,7 @@ export function JobApplications() {
           <Briefcase size={22} aria-hidden="true" />
           <h1>Job Applications</h1>
         </div>
-        <button className="secondary" disabled>
+        <button className="secondary" onClick={() => navigate('/job-applications/new')}>
           <Plus size={16} aria-hidden="true" />
           Add Application
         </button>
@@ -106,9 +108,10 @@ export function JobApplications() {
                     <th>Role</th>
                     <th>Status</th>
                     <th>Process</th>
-                      <th>Applied</th>
+                    <th>Applied</th>
                     <th>Location</th>
                     <th>Commute</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -135,6 +138,16 @@ export function JobApplications() {
                         <td>{formatDate(app.applicationDate)}</td>
                         <td>{app.location || '—'}</td>
                         <td>{commute}</td>
+                        <td>
+                          <button
+                            className="icon-btn"
+                            type="button"
+                            aria-label={`Edit ${app.roleName}`}
+                            onClick={() => navigate(`/job-applications/${app.id}/edit`)}
+                          >
+                            <Pencil size={15} aria-hidden="true" />
+                          </button>
+                        </td>
                       </tr>
                     );
                   })}

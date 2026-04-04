@@ -965,6 +965,32 @@ button.danger,
   }
 }
 
+// ── Job Application form ──────────────────────────────────────────────────────
+.ja-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--pico-spacing) calc(var(--pico-spacing) * 2);
+  margin-bottom: var(--pico-block-spacing-vertical);
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ja-form-full {
+  grid-column: 1 / -1;
+}
+
+.ja-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: calc(var(--pico-spacing) * 0.5);
+  padding-top: var(--pico-block-spacing-vertical);
+  border-top: 1px solid var(--pico-muted-border-color);
+
+  button { margin: 0; }
+}
+
 // ── Loading skeletons ─────────────────────────────────────────────────────────
 .ja-loading {
   display: flex;
