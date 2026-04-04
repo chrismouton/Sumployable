@@ -121,6 +121,67 @@ export class DashboardClient {
         }
         return Promise.resolve<number>(null as any);
     }
+
+    /**
+     * Get Job Applications Per Day
+     * @return OK
+     */
+    getJobApplicationsPerDay(from: Date): Promise<JobApplicationCountPerDayDto[]> {
+        let url_ = this.baseUrl + "/api/Dashboard/job-applications-per-day?";
+        if (from === undefined || from === null)
+            throw new globalThis.Error("The parameter 'from' must be defined and cannot be null.");
+        else
+            url_ += "from=" + encodeURIComponent(from ? "" + from.toISOString() : "") + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetJobApplicationsPerDay(_response);
+        });
+    }
+
+    protected processGetJobApplicationsPerDay(response: Response): Promise<JobApplicationCountPerDayDto[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(JobApplicationCountPerDayDto.fromJS(item));
+            }
+            else {
+                result200 = null as any;
+            }
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<JobApplicationCountPerDayDto[]>(null as any);
+    }
 }
 
 export class JobApplicationsClient {
@@ -1893,6 +1954,58 @@ export interface IInfoResponse {
     [key: string]: any;
 }
 
+export class JobApplicationCountPerDayDto implements IJobApplicationCountPerDayDto {
+    date?: Date;
+    count?: number;
+
+    [key: string]: any;
+
+    constructor(data?: IJobApplicationCountPerDayDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.date = _data["date"] ? new Date(_data["date"].toString()) : undefined as any;
+            this.count = _data["count"];
+        }
+    }
+
+    static fromJS(data: any): JobApplicationCountPerDayDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new JobApplicationCountPerDayDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["date"] = this.date ? formatDate(this.date) : undefined as any;
+        data["count"] = this.count;
+        return data;
+    }
+}
+
+export interface IJobApplicationCountPerDayDto {
+    date?: Date;
+    count?: number;
+
+    [key: string]: any;
+}
+
 export class JobApplicationDto implements IJobApplicationDto {
     id?: number;
     roleName?: string;
@@ -3039,6 +3152,12 @@ export interface IUpdateTodoListCommand {
     colour?: string | undefined;
 
     [key: string]: any;
+}
+
+function formatDate(d: Date) {
+    return d.getFullYear() + '-' + 
+        (d.getMonth() < 9 ? ('0' + (d.getMonth()+1)) : (d.getMonth()+1)) + '-' +
+        (d.getDate() < 10 ? ('0' + d.getDate()) : d.getDate());
 }
 
 export class SwaggerException extends Error {
