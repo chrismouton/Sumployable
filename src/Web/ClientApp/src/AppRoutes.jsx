@@ -4,6 +4,8 @@ import { Home } from "./components/Home";
 import { LoginPage } from "./components/api-authorization/LoginPage";
 import { RegisterPage } from "./components/api-authorization/RegisterPage";
 import { ProtectedRoute } from "./components/api-authorization/ProtectedRoute";
+import { Dashboard } from "./components/Dashboard";
+import { JobApplications } from "./components/JobApplications";
 
 const AppRoutes = [
   {
@@ -17,6 +19,14 @@ const AppRoutes = [
   {
     path: '/todo',
     element: <ProtectedRoute><Tasks /></ProtectedRoute>
+  },
+  {
+    path: '/dashboard',
+    element: <ProtectedRoute><Dashboard /></ProtectedRoute>
+  },
+  {
+    path: '/job-applications',
+    element: <ProtectedRoute><JobApplications /></ProtectedRoute>
   },
   {
     path: '/login',

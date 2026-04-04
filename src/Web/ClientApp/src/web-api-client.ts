@@ -7,6 +7,175 @@
 /* eslint-disable */
 // ReSharper disable InconsistentNaming
 
+export class JobApplicationsClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    /**
+     * Get all Job Applications
+     * @return OK
+     */
+    getJobApplications(): Promise<JobApplicationsVm> {
+        let url_ = this.baseUrl + "/api/JobApplications";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetJobApplications(_response);
+        });
+    }
+
+    protected processGetJobApplications(response: Response): Promise<JobApplicationsVm> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = JobApplicationsVm.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<JobApplicationsVm>(null as any);
+    }
+
+    /**
+     * Create a new Job Application
+     * @return Created
+     */
+    createJobApplication(body: CreateJobApplicationCommand): Promise<number> {
+        let url_ = this.baseUrl + "/api/JobApplications";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateJobApplication(_response);
+        });
+    }
+
+    protected processCreateJobApplication(response: Response): Promise<number> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 201) {
+            return response.text().then((_responseText) => {
+            let result201: any = null;
+            let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result201 = resultData201 !== undefined ? resultData201 : null as any;
+    
+            return result201;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<number>(null as any);
+    }
+
+    /**
+     * Update a Job Application
+     * @return No Content
+     */
+    updateJobApplication(id: number, body: UpdateJobApplicationCommand): Promise<void> {
+        let url_ = this.baseUrl + "/api/JobApplications/{id}";
+        if (id === undefined || id === null)
+            throw new globalThis.Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUpdateJobApplication(_response);
+        });
+    }
+
+    protected processUpdateJobApplication(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+}
+
 export class TodoItemsClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
@@ -1128,6 +1297,98 @@ export interface IColourDto {
     [key: string]: any;
 }
 
+export class CreateJobApplicationCommand implements ICreateJobApplicationCommand {
+    roleName!: string;
+    companyName?: string | undefined;
+    roleType?: number;
+    status?: number;
+    processStatus?: number;
+    source?: number;
+    advertisedSalary?: string | undefined;
+    url?: string | undefined;
+    location?: string | undefined;
+    commute?: number;
+    applicationDate?: Date;
+    note?: string | undefined;
+
+    [key: string]: any;
+
+    constructor(data?: ICreateJobApplicationCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.roleName = _data["roleName"];
+            this.companyName = _data["companyName"];
+            this.roleType = _data["roleType"];
+            this.status = _data["status"];
+            this.processStatus = _data["processStatus"];
+            this.source = _data["source"];
+            this.advertisedSalary = _data["advertisedSalary"];
+            this.url = _data["url"];
+            this.location = _data["location"];
+            this.commute = _data["commute"];
+            this.applicationDate = _data["applicationDate"] ? new Date(_data["applicationDate"].toString()) : undefined as any;
+            this.note = _data["note"];
+        }
+    }
+
+    static fromJS(data: any): CreateJobApplicationCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateJobApplicationCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["roleName"] = this.roleName;
+        data["companyName"] = this.companyName;
+        data["roleType"] = this.roleType;
+        data["status"] = this.status;
+        data["processStatus"] = this.processStatus;
+        data["source"] = this.source;
+        data["advertisedSalary"] = this.advertisedSalary;
+        data["url"] = this.url;
+        data["location"] = this.location;
+        data["commute"] = this.commute;
+        data["applicationDate"] = this.applicationDate ? this.applicationDate.toISOString() : undefined as any;
+        data["note"] = this.note;
+        return data;
+    }
+}
+
+export interface ICreateJobApplicationCommand {
+    roleName: string;
+    companyName?: string | undefined;
+    roleType?: number;
+    status?: number;
+    processStatus?: number;
+    source?: number;
+    advertisedSalary?: string | undefined;
+    url?: string | undefined;
+    location?: string | undefined;
+    commute?: number;
+    applicationDate?: Date;
+    note?: string | undefined;
+
+    [key: string]: any;
+}
+
 export class CreateTodoItemCommand implements ICreateTodoItemCommand {
     listId?: number;
     title?: string | undefined;
@@ -1464,6 +1725,218 @@ export class InfoResponse implements IInfoResponse {
 export interface IInfoResponse {
     email: string;
     isEmailConfirmed: boolean;
+
+    [key: string]: any;
+}
+
+export class JobApplicationDto implements IJobApplicationDto {
+    id?: number;
+    roleName?: string;
+    companyName?: string | undefined;
+    roleType?: number;
+    status?: number;
+    processStatus?: number;
+    source?: number;
+    advertisedSalary?: string | undefined;
+    url?: string | undefined;
+    location?: string | undefined;
+    commute?: number;
+    applicationDate?: Date;
+    note?: string | undefined;
+
+    [key: string]: any;
+
+    constructor(data?: IJobApplicationDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.roleName = _data["roleName"];
+            this.companyName = _data["companyName"];
+            this.roleType = _data["roleType"];
+            this.status = _data["status"];
+            this.processStatus = _data["processStatus"];
+            this.source = _data["source"];
+            this.advertisedSalary = _data["advertisedSalary"];
+            this.url = _data["url"];
+            this.location = _data["location"];
+            this.commute = _data["commute"];
+            this.applicationDate = _data["applicationDate"] ? new Date(_data["applicationDate"].toString()) : undefined as any;
+            this.note = _data["note"];
+        }
+    }
+
+    static fromJS(data: any): JobApplicationDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new JobApplicationDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["roleName"] = this.roleName;
+        data["companyName"] = this.companyName;
+        data["roleType"] = this.roleType;
+        data["status"] = this.status;
+        data["processStatus"] = this.processStatus;
+        data["source"] = this.source;
+        data["advertisedSalary"] = this.advertisedSalary;
+        data["url"] = this.url;
+        data["location"] = this.location;
+        data["commute"] = this.commute;
+        data["applicationDate"] = this.applicationDate ? this.applicationDate.toISOString() : undefined as any;
+        data["note"] = this.note;
+        return data;
+    }
+}
+
+export interface IJobApplicationDto {
+    id?: number;
+    roleName?: string;
+    companyName?: string | undefined;
+    roleType?: number;
+    status?: number;
+    processStatus?: number;
+    source?: number;
+    advertisedSalary?: string | undefined;
+    url?: string | undefined;
+    location?: string | undefined;
+    commute?: number;
+    applicationDate?: Date;
+    note?: string | undefined;
+
+    [key: string]: any;
+}
+
+export class JobApplicationsVm implements IJobApplicationsVm {
+    roleTypes?: LookupDto[];
+    statuses?: LookupDto[];
+    processStatuses?: LookupDto[];
+    sources?: LookupDto[];
+    commutes?: LookupDto[];
+    jobApplications?: JobApplicationDto[];
+
+    [key: string]: any;
+
+    constructor(data?: IJobApplicationsVm) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            if (Array.isArray(_data["roleTypes"])) {
+                this.roleTypes = [] as any;
+                for (let item of _data["roleTypes"])
+                    this.roleTypes!.push(LookupDto.fromJS(item));
+            }
+            if (Array.isArray(_data["statuses"])) {
+                this.statuses = [] as any;
+                for (let item of _data["statuses"])
+                    this.statuses!.push(LookupDto.fromJS(item));
+            }
+            if (Array.isArray(_data["processStatuses"])) {
+                this.processStatuses = [] as any;
+                for (let item of _data["processStatuses"])
+                    this.processStatuses!.push(LookupDto.fromJS(item));
+            }
+            if (Array.isArray(_data["sources"])) {
+                this.sources = [] as any;
+                for (let item of _data["sources"])
+                    this.sources!.push(LookupDto.fromJS(item));
+            }
+            if (Array.isArray(_data["commutes"])) {
+                this.commutes = [] as any;
+                for (let item of _data["commutes"])
+                    this.commutes!.push(LookupDto.fromJS(item));
+            }
+            if (Array.isArray(_data["jobApplications"])) {
+                this.jobApplications = [] as any;
+                for (let item of _data["jobApplications"])
+                    this.jobApplications!.push(JobApplicationDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): JobApplicationsVm {
+        data = typeof data === 'object' ? data : {};
+        let result = new JobApplicationsVm();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        if (Array.isArray(this.roleTypes)) {
+            data["roleTypes"] = [];
+            for (let item of this.roleTypes)
+                data["roleTypes"].push(item ? item.toJSON() : undefined as any);
+        }
+        if (Array.isArray(this.statuses)) {
+            data["statuses"] = [];
+            for (let item of this.statuses)
+                data["statuses"].push(item ? item.toJSON() : undefined as any);
+        }
+        if (Array.isArray(this.processStatuses)) {
+            data["processStatuses"] = [];
+            for (let item of this.processStatuses)
+                data["processStatuses"].push(item ? item.toJSON() : undefined as any);
+        }
+        if (Array.isArray(this.sources)) {
+            data["sources"] = [];
+            for (let item of this.sources)
+                data["sources"].push(item ? item.toJSON() : undefined as any);
+        }
+        if (Array.isArray(this.commutes)) {
+            data["commutes"] = [];
+            for (let item of this.commutes)
+                data["commutes"].push(item ? item.toJSON() : undefined as any);
+        }
+        if (Array.isArray(this.jobApplications)) {
+            data["jobApplications"] = [];
+            for (let item of this.jobApplications)
+                data["jobApplications"].push(item ? item.toJSON() : undefined as any);
+        }
+        return data;
+    }
+}
+
+export interface IJobApplicationsVm {
+    roleTypes?: LookupDto[];
+    statuses?: LookupDto[];
+    processStatuses?: LookupDto[];
+    sources?: LookupDto[];
+    commutes?: LookupDto[];
+    jobApplications?: JobApplicationDto[];
 
     [key: string]: any;
 }
@@ -2132,6 +2605,102 @@ export interface ITwoFactorResponse {
     recoveryCodes?: string[] | undefined;
     isTwoFactorEnabled: boolean;
     isMachineRemembered: boolean;
+
+    [key: string]: any;
+}
+
+export class UpdateJobApplicationCommand implements IUpdateJobApplicationCommand {
+    id?: number;
+    roleName!: string;
+    companyName?: string | undefined;
+    roleType?: number;
+    status?: number;
+    processStatus?: number;
+    source?: number;
+    advertisedSalary?: string | undefined;
+    url?: string | undefined;
+    location?: string | undefined;
+    commute?: number;
+    applicationDate?: Date;
+    note?: string | undefined;
+
+    [key: string]: any;
+
+    constructor(data?: IUpdateJobApplicationCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.roleName = _data["roleName"];
+            this.companyName = _data["companyName"];
+            this.roleType = _data["roleType"];
+            this.status = _data["status"];
+            this.processStatus = _data["processStatus"];
+            this.source = _data["source"];
+            this.advertisedSalary = _data["advertisedSalary"];
+            this.url = _data["url"];
+            this.location = _data["location"];
+            this.commute = _data["commute"];
+            this.applicationDate = _data["applicationDate"] ? new Date(_data["applicationDate"].toString()) : undefined as any;
+            this.note = _data["note"];
+        }
+    }
+
+    static fromJS(data: any): UpdateJobApplicationCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateJobApplicationCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["roleName"] = this.roleName;
+        data["companyName"] = this.companyName;
+        data["roleType"] = this.roleType;
+        data["status"] = this.status;
+        data["processStatus"] = this.processStatus;
+        data["source"] = this.source;
+        data["advertisedSalary"] = this.advertisedSalary;
+        data["url"] = this.url;
+        data["location"] = this.location;
+        data["commute"] = this.commute;
+        data["applicationDate"] = this.applicationDate ? this.applicationDate.toISOString() : undefined as any;
+        data["note"] = this.note;
+        return data;
+    }
+}
+
+export interface IUpdateJobApplicationCommand {
+    id?: number;
+    roleName: string;
+    companyName?: string | undefined;
+    roleType?: number;
+    status?: number;
+    processStatus?: number;
+    source?: number;
+    advertisedSalary?: string | undefined;
+    url?: string | undefined;
+    location?: string | undefined;
+    commute?: number;
+    applicationDate?: Date;
+    note?: string | undefined;
 
     [key: string]: any;
 }

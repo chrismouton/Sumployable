@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from './api-authorization/AuthContext';
 import { ThemeToggle } from './ThemeToggle';
 
@@ -12,14 +12,19 @@ function AuthLinks() {
     navigate('/login');
   };
 
+  const navLinkClass = ({ isActive }) => isActive ? 'nav-link-active' : undefined;
+
   if (isAuthenticated) {
-    return <li><a href="#" onClick={handleLogout}>Log out</a></li>;
+    return (
+      <>
+        <li><NavLink to="/dashboard" className={navLinkClass}>Dashboard</NavLink></li>
+        <li><NavLink to="/job-applications" className={navLinkClass}>Job Applications</NavLink></li>
+        <li><a href="#" onClick={handleLogout}>Log out</a></li>
+      </>
+    );
   }
   return (
-    <>
-      <li><Link to="/login">Log in</Link></li>
-      <li><Link to="/register">Register</Link></li>
-    </>
+    <li><Link to="/dashboard">Log in</Link></li>
   );
 }
 
@@ -28,12 +33,7 @@ export function NavMenu() {
     <header>
       <nav>
         <ul>
-          <li><Link to="/">Clean Architecture</Link></li>
-        </ul>
-        <ul>
-          <li><Link to="/">Home</Link></li>
-          <li><Link to="/counter">Counter</Link></li>
-          <li><Link to="/todo">Tasks</Link></li>
+          <li><Link to="/">Sumployable</Link></li>
         </ul>
         <ul>
           <AuthLinks />
