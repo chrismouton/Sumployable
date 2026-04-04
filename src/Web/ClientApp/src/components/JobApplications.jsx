@@ -8,7 +8,7 @@ function getLookupTitle(lookups, id) {
   return item ? item.title : '—';
 }
 
-function getStatusColor(title) {
+function getProcessStatusColor(title) {
   if (!title) return 'default';
   const t = title.toLowerCase();
   if (t.includes('interview')) return 'orange';
@@ -17,6 +17,14 @@ function getStatusColor(title) {
   if (t.includes('withdraw')) return 'slate';
   if (t.includes('applied')) return 'blue';
   return 'default';
+}
+
+function getApplicationStatusColor(title) {
+    if (!title) return 'default';
+    const t = title.toLowerCase();
+    if (t.includes('active')) return 'blue';
+    if (t.includes('expired')) return 'grey';
+    if (t.includes('closed')) return 'slate';
 }
 
 function formatDate(date) {
@@ -97,7 +105,8 @@ export function JobApplications() {
                     <th>Company</th>
                     <th>Role</th>
                     <th>Status</th>
-                    <th>Applied</th>
+                    <th>Process</th>
+                      <th>Applied</th>
                     <th>Location</th>
                     <th>Commute</th>
                   </tr>
@@ -105,14 +114,21 @@ export function JobApplications() {
                 <tbody>
                   {data.jobApplications.map((app) => {
                     const processStatus = getLookupTitle(data.processStatuses, app.processStatus);
+                    const applicationStatus = getLookupTitle(data.statuses, app.status);
                     const commute = getLookupTitle(data.commutes, app.commute);
-                    const statusColor = getStatusColor(processStatus);
+                    const processStatusColor = getProcessStatusColor(processStatus);
+                    const applicationStatusColor = getApplicationStatusColor(applicationStatus);
                     return (
                       <tr key={app.id}>
                         <td>{app.companyName || '—'}</td>
                         <td>{app.roleName}</td>
+                          <td>
+                          <span className={`status-badge status-badge--${applicationStatusColor}`}>
+                                  {applicationStatus}
+                              </span>
+                          </td>
                         <td>
-                          <span className={`status-badge status-badge--${statusColor}`}>
+                          <span className={`status-badge status-badge--${processStatusColor}`}>
                             {processStatus}
                           </span>
                         </td>
