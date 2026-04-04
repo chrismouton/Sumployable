@@ -182,6 +182,120 @@ export class DashboardClient {
         }
         return Promise.resolve<JobApplicationCountPerDayDto[]>(null as any);
     }
+
+    /**
+     * Get Job Application Count By Role Type
+     * @return OK
+     */
+    getJobApplicationCountByRoleType(): Promise<RoleTypeCountDto[]> {
+        let url_ = this.baseUrl + "/api/Dashboard/job-application-count-by-role-type";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetJobApplicationCountByRoleType(_response);
+        });
+    }
+
+    protected processGetJobApplicationCountByRoleType(response: Response): Promise<RoleTypeCountDto[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(RoleTypeCountDto.fromJS(item));
+            }
+            else {
+                result200 = null as any;
+            }
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<RoleTypeCountDto[]>(null as any);
+    }
+
+    /**
+     * Get Job Application Count By Process Status
+     * @return OK
+     */
+    getJobApplicationCountByProcessStatus(): Promise<ProcessStatusCountDto[]> {
+        let url_ = this.baseUrl + "/api/Dashboard/job-application-count-by-process-status";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetJobApplicationCountByProcessStatus(_response);
+        });
+    }
+
+    protected processGetJobApplicationCountByProcessStatus(response: Response): Promise<ProcessStatusCountDto[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ProcessStatusCountDto.fromJS(item));
+            }
+            else {
+                result200 = null as any;
+            }
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ProcessStatusCountDto[]>(null as any);
+    }
 }
 
 export class JobApplicationsClient {
@@ -2330,6 +2444,62 @@ export interface ILookupDto {
     [key: string]: any;
 }
 
+export class ProcessStatusCountDto implements IProcessStatusCountDto {
+    processStatus?: number;
+    processStatusName?: string;
+    count?: number;
+
+    [key: string]: any;
+
+    constructor(data?: IProcessStatusCountDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.processStatus = _data["processStatus"];
+            this.processStatusName = _data["processStatusName"];
+            this.count = _data["count"];
+        }
+    }
+
+    static fromJS(data: any): ProcessStatusCountDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProcessStatusCountDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["processStatus"] = this.processStatus;
+        data["processStatusName"] = this.processStatusName;
+        data["count"] = this.count;
+        return data;
+    }
+}
+
+export interface IProcessStatusCountDto {
+    processStatus?: number;
+    processStatusName?: string;
+    count?: number;
+
+    [key: string]: any;
+}
+
 export class RefreshRequest implements IRefreshRequest {
     refreshToken!: string;
 
@@ -2530,6 +2700,62 @@ export interface IResetPasswordRequest {
     email: string;
     resetCode: string;
     newPassword: string;
+
+    [key: string]: any;
+}
+
+export class RoleTypeCountDto implements IRoleTypeCountDto {
+    roleType?: number;
+    roleTypeName?: string;
+    count?: number;
+
+    [key: string]: any;
+
+    constructor(data?: IRoleTypeCountDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.roleType = _data["roleType"];
+            this.roleTypeName = _data["roleTypeName"];
+            this.count = _data["count"];
+        }
+    }
+
+    static fromJS(data: any): RoleTypeCountDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new RoleTypeCountDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["roleType"] = this.roleType;
+        data["roleTypeName"] = this.roleTypeName;
+        data["count"] = this.count;
+        return data;
+    }
+}
+
+export interface IRoleTypeCountDto {
+    roleType?: number;
+    roleTypeName?: string;
+    count?: number;
 
     [key: string]: any;
 }
