@@ -3,6 +3,7 @@ using Sumployable.Application.Dashboard.Queries.GetJobApplicationCountByDate;
 using Sumployable.Application.Dashboard.Queries.GetJobApplicationsPerDay;
 using Sumployable.Application.Dashboard.Queries.GetJobApplicationCountByRoleType;
 using Sumployable.Application.Dashboard.Queries.GetJobApplicationCountByProcessStatus;
+using Sumployable.Application.Dashboard.Queries.GetActiveInProgressApplications;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Sumployable.Web.Endpoints;
@@ -18,6 +19,7 @@ public class Dashboard : IEndpointGroup
         groupBuilder.MapGet(GetJobApplicationsPerDay, "job-applications-per-day");
         groupBuilder.MapGet(GetJobApplicationCountByRoleType, "job-application-count-by-role-type");
         groupBuilder.MapGet(GetJobApplicationCountByProcessStatus, "job-application-count-by-process-status");
+        groupBuilder.MapGet(GetActiveInProgressApplications, "active-in-progress-applications");
     }
 
     [EndpointSummary("Get Dashboard")]
@@ -61,6 +63,15 @@ public class Dashboard : IEndpointGroup
     public static async Task<Ok<IReadOnlyList<ProcessStatusCountDto>>> GetJobApplicationCountByProcessStatus(ISender sender)
     {
         var result = await sender.Send(new GetJobApplicationCountByProcessStatusQuery());
+
+        return TypedResults.Ok(result);
+    }
+
+    [EndpointSummary("Get Active In-Progress Applications")]
+    [EndpointDescription("Returns job applications with Active status that are currently in-progress (not Applied, Hired, Rejected, or Retracted), sorted by ProcessStatus then ApplicationDate.")]
+    public static async Task<Ok<IReadOnlyList<ActiveInProgressApplicationDto>>> GetActiveInProgressApplications(ISender sender)
+    {
+        var result = await sender.Send(new GetActiveInProgressApplicationsQuery());
 
         return TypedResults.Ok(result);
     }

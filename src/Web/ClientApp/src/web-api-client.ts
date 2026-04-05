@@ -296,6 +296,63 @@ export class DashboardClient {
         }
         return Promise.resolve<ProcessStatusCountDto[]>(null as any);
     }
+
+    /**
+     * Get Active In-Progress Applications
+     * @return OK
+     */
+    getActiveInProgressApplications(): Promise<ActiveInProgressApplicationDto[]> {
+        let url_ = this.baseUrl + "/api/Dashboard/active-in-progress-applications";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetActiveInProgressApplications(_response);
+        });
+    }
+
+    protected processGetActiveInProgressApplications(response: Response): Promise<ActiveInProgressApplicationDto[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ActiveInProgressApplicationDto.fromJS(item));
+            }
+            else {
+                result200 = null as any;
+            }
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ActiveInProgressApplicationDto[]>(null as any);
+    }
 }
 
 export class JobApplicationsClient {
@@ -1532,6 +1589,74 @@ export interface IAccessTokenResponse {
     accessToken: string;
     expiresIn: number;
     refreshToken: string;
+
+    [key: string]: any;
+}
+
+export class ActiveInProgressApplicationDto implements IActiveInProgressApplicationDto {
+    companyName?: string | undefined;
+    roleName!: string;
+    processStatusName!: string;
+    applicationDate?: Date;
+    location?: string | undefined;
+    commuteName!: string;
+
+    [key: string]: any;
+
+    constructor(data?: IActiveInProgressApplicationDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.companyName = _data["companyName"];
+            this.roleName = _data["roleName"];
+            this.processStatusName = _data["processStatusName"];
+            this.applicationDate = _data["applicationDate"] ? new Date(_data["applicationDate"].toString()) : undefined as any;
+            this.location = _data["location"];
+            this.commuteName = _data["commuteName"];
+        }
+    }
+
+    static fromJS(data: any): ActiveInProgressApplicationDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ActiveInProgressApplicationDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["companyName"] = this.companyName;
+        data["roleName"] = this.roleName;
+        data["processStatusName"] = this.processStatusName;
+        data["applicationDate"] = this.applicationDate ? this.applicationDate.toISOString() : undefined as any;
+        data["location"] = this.location;
+        data["commuteName"] = this.commuteName;
+        return data;
+    }
+}
+
+export interface IActiveInProgressApplicationDto {
+    companyName?: string | undefined;
+    roleName: string;
+    processStatusName: string;
+    applicationDate?: Date;
+    location?: string | undefined;
+    commuteName: string;
 
     [key: string]: any;
 }

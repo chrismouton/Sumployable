@@ -12,6 +12,7 @@ export function Dashboard() {
   const [perDayData, setPerDayData] = useState(null);
   const [roleTypeData, setRoleTypeData] = useState(null);
   const [processStatusData, setProcessStatusData] = useState(null);
+  const [inProgressData, setInProgressData] = useState(null);
 
   useEffect(() => {
     const client = new DashboardClient();
@@ -23,7 +24,8 @@ export function Dashboard() {
       client.getJobApplicationsPerDay(sevenDaysAgo),
       client.getJobApplicationCountByRoleType(),
       client.getJobApplicationCountByProcessStatus(),
-    ]).then(([dashboard, countByDate, perDay, roleType, processStatus]) => {
+      client.getActiveInProgressApplications(),
+    ]).then(([dashboard, countByDate, perDay, roleType, processStatus, inProgress]) => {
       setTotalCount(dashboard.totalJobApplications ?? 0);
       setTwoWeeksAgoCount(countByDate);
       setPerDayData(perDay.map(d => ({
@@ -32,6 +34,7 @@ export function Dashboard() {
       })));
       setRoleTypeData(roleType.map(d => ({ name: d.roleTypeName, value: d.count ?? 0 })));
       setProcessStatusData(processStatus.map(d => ({ name: d.processStatusName, value: d.count ?? 0 })));
+      setInProgressData(inProgress);
     });
   }, []);
 
@@ -112,6 +115,42 @@ export function Dashboard() {
             </ResponsiveContainer>
           )}
         </div>
+      </div>
+
+      <div className="dash-chart-card">
+        <h2 className="dash-chart-title">Active in-progress applications</h2>
+        {inProgressData === null ? (
+          <div className="dash-chart-skeleton" aria-label="Loading table" />
+        ) : inProgressData.length === 0 ? (
+          <p className="dash-empty-state">No in-progress applications.</p>
+        ) : (
+          <div className="dash-table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Company</th>
+                  <th>Role</th>
+                  <th>Process Status</th>
+                  <th>Application Date</th>
+                  <th>Location</th>
+                  <th>Commute</th>
+                </tr>
+              </thead>
+              <tbody>
+                {inProgressData.map((row, i) => (
+                  <tr key={i}>
+                    <td>{row.companyName ?? '—'}</td>
+                    <td>{row.roleName}</td>
+                    <td>{row.processStatusName}</td>
+                    <td>{new Date(row.applicationDate).toLocaleDateString('en-AU')}</td>
+                    <td>{row.location ?? '—'}</td>
+                    <td>{row.commuteName}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       <div className="dash-welcome">
