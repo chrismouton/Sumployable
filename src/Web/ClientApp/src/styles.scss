@@ -833,6 +833,16 @@ button.danger,
   color: var(--pico-contrast);
 }
 
+.dash-pie-row {
+  display: flex;
+  gap: var(--pico-spacing);
+  flex-wrap: wrap;
+
+  > .dash-chart-card {
+    flex: 1 1 280px;
+  }
+}
+
 .dash-chart-skeleton {
   height: 200px;
   border-radius: var(--pico-border-radius);

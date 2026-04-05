@@ -1,13 +1,17 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { LayoutDashboard, Briefcase, ArrowRight } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList, PieChart, Pie, Cell, Legend } from 'recharts';
+
+const COLORS = ['#4e79a7', '#f28e2b', '#e15759', '#76b7b2', '#59a14f', '#edc948', '#b07aa1'];
 import { DashboardClient } from '../web-api-client';
 
 export function Dashboard() {
   const [totalCount, setTotalCount] = useState(null);
   const [twoWeeksAgoCount, setTwoWeeksAgoCount] = useState(null);
   const [perDayData, setPerDayData] = useState(null);
+  const [roleTypeData, setRoleTypeData] = useState(null);
+  const [processStatusData, setProcessStatusData] = useState(null);
 
   useEffect(() => {
     const client = new DashboardClient();
@@ -17,13 +21,17 @@ export function Dashboard() {
       client.getDashboard(),
       client.getJobApplicationCountByDate(twoWeeksAgo),
       client.getJobApplicationsPerDay(sevenDaysAgo),
-    ]).then(([dashboard, countByDate, perDay]) => {
+      client.getJobApplicationCountByRoleType(),
+      client.getJobApplicationCountByProcessStatus(),
+    ]).then(([dashboard, countByDate, perDay, roleType, processStatus]) => {
       setTotalCount(dashboard.totalJobApplications ?? 0);
       setTwoWeeksAgoCount(countByDate);
       setPerDayData(perDay.map(d => ({
         label: new Date(d.date).toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric' }),
         count: d.count ?? 0,
       })));
+      setRoleTypeData(roleType.map(d => ({ name: d.roleTypeName, value: d.count ?? 0 })));
+      setProcessStatusData(processStatus.map(d => ({ name: d.processStatusName, value: d.count ?? 0 })));
     });
   }, []);
 
@@ -68,6 +76,42 @@ export function Dashboard() {
             </BarChart>
           </ResponsiveContainer>
         )}
+      </div>
+
+      <div className="dash-pie-row">
+        <div className="dash-chart-card">
+          <h2 className="dash-chart-title">By role type</h2>
+          {roleTypeData === null ? (
+            <div className="dash-chart-skeleton" aria-label="Loading chart" />
+          ) : (
+            <ResponsiveContainer width="100%" height={260}>
+              <PieChart aria-label="Job applications by role type pie chart">
+                <Pie data={roleTypeData} dataKey="value" nameKey="name" cx="35%" cy="50%" outerRadius={80}>
+                  {roleTypeData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+                </Pie>
+                <Tooltip formatter={(value, name) => [value, name]} />
+                <Legend layout="vertical" align="right" verticalAlign="middle" formatter={(value, entry) => `${value} (${entry.payload.value})`} />
+              </PieChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+
+        <div className="dash-chart-card">
+          <h2 className="dash-chart-title">By process status</h2>
+          {processStatusData === null ? (
+            <div className="dash-chart-skeleton" aria-label="Loading chart" />
+          ) : (
+            <ResponsiveContainer width="100%" height={260}>
+              <PieChart aria-label="Job applications by process status pie chart">
+                <Pie data={processStatusData} dataKey="value" nameKey="name" cx="35%" cy="50%" outerRadius={80}>
+                  {processStatusData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+                </Pie>
+                <Tooltip formatter={(value, name) => [value, name]} />
+                <Legend layout="vertical" align="right" verticalAlign="middle" formatter={(value, entry) => `${value} (${entry.payload.value})`} />
+              </PieChart>
+            </ResponsiveContainer>
+          )}
+        </div>
       </div>
 
       <div className="dash-welcome">
