@@ -37,13 +37,17 @@ function formatDate(date) {
   });
 }
 
+const PAGE_SIZE = 50;
+
 export function JobApplications() {
   const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const load = async () => {
+    setCurrentPage(1);
     setLoading(true);
     setError(null);
     try {
@@ -59,6 +63,14 @@ export function JobApplications() {
   useEffect(() => {
     load();
   }, []);
+
+  const applications = data?.jobApplications ?? [];
+  const totalPages = Math.ceil(applications.length / PAGE_SIZE);
+  const pagedApplications = applications.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE
+  );
+  const showPagination = totalPages > 1;
 
   return (
     <div className="saas-page">
@@ -100,6 +112,7 @@ export function JobApplications() {
               <small>Add your first application to start tracking your job search.</small>
             </div>
           ) : (
+            <>
             <div className="ja-table-wrap">
               <table className="ja-table">
                 <thead>
@@ -115,7 +128,7 @@ export function JobApplications() {
                   </tr>
                 </thead>
                 <tbody>
-                  {data.jobApplications.map((app) => {
+                  {pagedApplications.map((app) => {
                     const processStatus = getLookupTitle(data.processStatuses, app.processStatus);
                     const applicationStatus = getLookupTitle(data.statuses, app.status);
                     const commute = getLookupTitle(data.commutes, app.commute);
@@ -154,6 +167,32 @@ export function JobApplications() {
                 </tbody>
               </table>
             </div>
+            {showPagination && (
+              <div className="ja-pagination">
+                <button
+                  className="secondary"
+                  type="button"
+                  onClick={() => setCurrentPage((p) => p - 1)}
+                  disabled={currentPage === 1}
+                  aria-label="Previous page"
+                >
+                  Previous
+                </button>
+                <span className="ja-pagination-info" aria-live="polite" aria-atomic="true">
+                  Page {currentPage} of {totalPages}
+                </span>
+                <button
+                  className="secondary"
+                  type="button"
+                  onClick={() => setCurrentPage((p) => p + 1)}
+                  disabled={currentPage === totalPages}
+                  aria-label="Next page"
+                >
+                  Next
+                </button>
+              </div>
+            )}
+            </>
           )}
         </>
       )}

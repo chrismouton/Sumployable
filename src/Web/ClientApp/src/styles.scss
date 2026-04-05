@@ -987,6 +987,35 @@ button.danger,
   }
 }
 
+// ── Job Applications pagination ───────────────────────────────────────────────
+.ja-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--pico-spacing) * 0.75);
+  margin-top: var(--pico-block-spacing-vertical);
+
+  button {
+    margin: 0;
+    padding-inline: calc(var(--pico-spacing) * 0.75);
+    font-size: 0.875rem;
+  }
+
+  button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+.ja-pagination-info {
+  font-size: 0.875rem;
+  color: var(--pico-muted-color);
+  white-space: nowrap;
+  min-width: 8ch;
+  text-align: center;
+}
+
 // ── Status badge ─────────────────────────────────────────────────────────────
 .status-badge {
   display: inline-block;
