@@ -817,6 +817,40 @@ button.danger,
 }
 
 // ── Dashboard ─────────────────────────────────────────────────────────────────
+.dash-chart-card {
+  padding: 1.75rem 2rem;
+  border-radius: calc(var(--pico-border-radius) * 2);
+  border: 1px solid var(--pico-muted-border-color);
+  background: var(--pico-card-background-color);
+  margin-bottom: 2rem;
+}
+
+.dash-chart-title {
+  margin: 0 0 1.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: "Outfit", sans-serif;
+  color: var(--pico-contrast);
+}
+
+.dash-chart-skeleton {
+  height: 200px;
+  border-radius: var(--pico-border-radius);
+  background: linear-gradient(
+    90deg,
+    var(--pico-muted-border-color) 25%,
+    color-mix(in srgb, var(--pico-muted-border-color) 50%, transparent) 50%,
+    var(--pico-muted-border-color) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 .dash-welcome {
   display: flex;
   justify-content: center;
