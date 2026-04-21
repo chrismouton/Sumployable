@@ -76,7 +76,7 @@ export class DashboardClient {
         if (date === undefined || date === null)
             throw new globalThis.Error("The parameter 'date' must be defined and cannot be null.");
         else
-            url_ += "date=" + encodeURIComponent(date ? date.toISOString().substring(0, 10) : "") + "&";
+            url_ += "date=" + encodeURIComponent(date ? "" + date.toISOString() : "") + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -131,7 +131,7 @@ export class DashboardClient {
         if (from === undefined || from === null)
             throw new globalThis.Error("The parameter 'from' must be defined and cannot be null.");
         else
-            url_ += "from=" + encodeURIComponent(from ? "" + from.toISOString().substring(0, 10) : "") + "&";
+            url_ += "from=" + encodeURIComponent(from ? "" + from.toISOString() : "") + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
